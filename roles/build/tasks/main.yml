@@ -1,0 +1,34 @@
+---
+- file: path={{ ansible_tmp_dir }} state=directory mode=0755
+
+- name: Clone {{ project_git.repo }} {{ project_git.version }}
+  git:
+    repo: "{{ project_git.repo }}"
+    version: "{{ project_git.version }}"
+    dest: "{{ project_dir }}"
+    force: yes
+    accept_hostkey: yes
+
+- name: Compile
+  shell: mvn clean install
+  args:
+    chdir: "{{ project_dir }}"
+  when: not project_compiled
+
+- name: Build image
+  shell: |
+    docker build -t {{ project_name }} .
+    docker save -o {{ ansible_tmp_dir }}/{{ project_name }}_image.tar {{ project_name }}
+  args:
+    chdir: "{{ project_dir }}"
+
+- name: Clear invalid images
+  shell: docker image prune -f
+  ignore_errors: True
+
+- name: List images
+  shell: docker images
+  ignore_errors: True
+  register: project_build_check
+    
+- debug: var=project_build_check

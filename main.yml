@@ -1,0 +1,28 @@
+---
+- name: <project-{{ name }}> Build
+  hosts: master
+  remote_user: root
+  vars_files: vars/project_{{ name }}.yml
+  roles: [build]
+  tags: build
+
+- name: <project-{{ name }}> Deploy
+  hosts: clusters_{{ name }}
+  remote_user: root
+  vars_files: vars/project_{{ name }}.yml
+  roles: [deploy]
+  tags: deploy
+
+- name: <project-{{ name }}> Backup logs
+  hosts: master
+  remote_user: root
+  tasks:
+    - shell: bak.sh {{ name }} {{ env }}
+  tags: log
+
+- name: <project-{{ name }}> Collect logs
+  hosts: clusters_{{ name }}
+  remote_user: root
+  vars_files: vars/project_{{ name }}.yml
+  roles: [log]
+  tags: log

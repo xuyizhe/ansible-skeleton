@@ -1,2 +1,2 @@
 # ansible-skeleton
-Whenever i start an ansible project.
+My Ansible skeleton.

@@ -1,0 +1,20 @@
+# file: hosts_dev
+
+[all:vars]
+env=dev
+
+[master]
+localhost
+
+[clusters:children]
+clusters_a
+clusters_b
+
+[clusters_a]
+localhost
+# 192.168.1.211
+
+[clusters_b]
+localhost
+# 192.168.1.212
+

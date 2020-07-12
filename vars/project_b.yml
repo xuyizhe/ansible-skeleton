@@ -1,0 +1,11 @@
+---
+ansible_tmp_dir: /tmp/ansible-tmp
+project_title: Project B
+project_name: b
+project_dir: /tmp/ansible-tmp/b
+project_git:
+  repo: https://github.com/xuyizhe/ansible-skeleton.git
+  version: master
+project_compiled: false
+project_log_dir: /tmp/ansible-tmp/b-log
+

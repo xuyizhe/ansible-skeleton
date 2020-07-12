@@ -1,0 +1,30 @@
+---
+- file: path={{ ansible_tmp_dir }} state=directory mode=0755
+
+- name: Deploy image.tar
+  copy:
+    src: "{{ ansible_tmp_dir }}/{{ project_name }}_image.tar"
+    dest: "{{ ansible_tmp_dir }}/{{ project_name }}_image.tar"
+    mode: preserve
+
+- name: Load image from archieve
+  shell: docker load -i {{ ansible_tmp_dir }}/{{ project_name }}_image.tar
+
+- name: Clear invalid images
+  shell: docker image prune -f
+  ignore_errors: True
+
+- name: Restart
+  shell: |
+    set +e
+    docker rm -fv $(docker ps -aqf "name={{ project_name }}")
+    # docker run –name {{ project_name }}_1 …
+  register: restart
+  until: restart is succeeded
+  retries: 3
+  ignore_errors: True
+
+# - debug: var=restart
+
+- name: List containers
+  shell: docker ps

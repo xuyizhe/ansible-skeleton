@@ -1,0 +1,17 @@
+# file: prod
+
+[all:vars]
+env=prod
+
+[master]
+localhost
+
+[clusters:children]
+clusters_a
+clusters_b
+
+[clusters_a]
+255.255.255.255
+
+[clusters_b]
+255.255.255.255
